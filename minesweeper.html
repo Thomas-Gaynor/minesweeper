@@ -1,0 +1,323 @@
+<html>
+	<head>
+
+		<title> This Is Good</title>
+		<style>
+			
+			td {
+				width: 40px;
+				height: 40px;
+				border: 1px solid black;
+				text-align: center;
+				padding: 0px;
+				margin:  0px;
+			}
+
+			table{
+				margin: auto;
+				margin-top: 40px;
+
+			}
+
+			* {
+				-webkit-touch-callout: none; /* iOS Safari */
+				-webkit-user-select: none; /* Safari */
+				-khtml-user-select: none; /* Konqueror HTML */
+				-moz-user-select: none; /* Firefox */
+				-ms-user-select: none; /* Internet Explorer/Edge */
+				user-select: none; /* Non-prefixed version, currently
+				                                  supported by Chrome and Opera */
+
+				text-align: center;
+			}
+
+		</style>
+
+	</head>
+	<body>
+
+		<table>
+			<tbody id="tableBody">
+
+				
+
+			</tbody>
+		</table>
+
+		<p id="score"></p>
+
+		<script>
+
+			var startCoords = {
+				y: 0,
+				x: 0
+			}
+
+			var bombsComplete = 0
+
+			document.addEventListener('contextmenu', event => event.preventDefault());
+
+			var gameInProgress = false
+
+			var bodyTable = document.getElementById("tableBody");
+			var numberOfRows = 15;
+			var numberOfColumns = 15;
+
+			var bombsTotal = Math.round((numberOfColumns * numberOfRows) / 7)
+
+
+			var rows = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
+
+			var columns = [[]];
+
+			// Initialise Game Board
+
+			for (var i = 0; i < numberOfRows; i++){
+
+				bodyTable.innerHTML += "<tr id = 'row" + i + "'></tr>";
+
+				var tempRow = document.getElementById("row"+i);
+
+				for (var ii = 0; ii < numberOfColumns; ii++){
+
+					tempRow.innerHTML += "<td id= 'cell" + i + "-" + ii + "' onclick='cellClicked(" + i + "," + ii + ")' oncontextmenu='cellClickedRight(" + i + "," + ii + ")'></td>";
+
+					rows[i].push(document.getElementById("cell" + i + "-" + ii));
+
+					document.getElementById("cell" + i + "-" + ii).style.backgroundColor = "grey"
+					document.getElementById("cell" + i + "-" + ii).style.color = "grey"
+
+				}
+			}
+
+			function resetGame(){
+
+				bombsComplete = 0
+				for (var i = 0; i < numberOfRows; i++){
+
+					for (var ii = 0; ii < numberOfColumns; ii++){
+
+						document.getElementById("cell" + i + "-" + ii).style.backgroundColor = "grey"
+						document.getElementById("cell" + i + "-" + ii).style.color = "grey"
+						document.getElementById("cell" + i + "-" + ii).innerHTML = ""
+
+					}
+				}
+
+				
+			}
+
+			// Randomly pace a bomb, repeatTimes = no. of times to place it
+
+			function bombPlace(repeatTimes){
+				for (var i = 0; i < repeatTimes; i++){
+
+					bombPlaceSubAction()
+
+				}
+
+			}
+
+			function bombPlaceSubAction(){
+				var tempX = getRandomArbitrary(0,numberOfColumns)
+				var tempY = getRandomArbitrary(0,numberOfRows)
+				if (document.getElementById("cell" + tempY + "-" + tempX).innerHTML == "" && startAreaTest(tempY, tempX) == true){
+					document.getElementById("cell" + tempY + "-" + tempX).innerHTML = "X"
+				}else{
+					bombPlaceSubAction()
+				}
+			}
+
+			// check if next to anything
+
+			function startAreaTest(yCoord, xCoord){
+
+				for (var i = -1; i < 2; i++){
+
+					for (var j = -1; j < 2; j++){
+
+						if(yCoord == startCoords.y + i && xCoord == startCoords.x + j){
+
+							return false
+
+						}
+
+					}
+
+				}
+
+				return true
+			}
+
+			// Select location for bomb regardless of location (DEBUGGER)
+
+			function directBombPlace(xBomb, yBomb){
+				document.getElementById("cell" + yBomb + "-" + xBomb).innerHTML = "X"
+			}
+
+			// Checks to see if there are any bombs near things
+
+			function checkBombs(xCoord, yCoord){
+
+				var nextBombTally = 0;
+
+				for (var i = -1; i < 2; i++){
+
+					for (var j = -1; j < 2; j++){
+
+						if (j == 0 && i == 0){
+
+						}else if(document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()) != null && document.getElementById("cell" + yCoord + "-" + xCoord).innerHTML != "X"){
+
+							if(document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()).innerHTML == "X"){
+
+								nextBombTally += 1
+
+							}else{
+
+							}
+
+						}else{
+
+						}
+
+					}
+
+				}
+				if(nextBombTally != 0){
+					document.getElementById("cell" + yCoord + "-" + xCoord).innerHTML = nextBombTally
+				}
+			}
+
+			// Checks the whole board for stuff
+
+			function updateBoard(){
+
+				for (var i = 0; i < numberOfColumns; i++){
+
+					for (var ii = 0; ii < numberOfRows; ii++){
+
+						checkBombs(i, ii)
+
+					}
+
+				}
+
+			}
+
+			function cellClickedRight(){
+
+				if (gameInProgress == true && event.target.style.backgroundColor != "white"){
+					if (event.target.style.backgroundColor != "red"){
+
+						event.target.style.backgroundColor = "red"
+						event.target.style.color = "red"
+						bombsComplete += 1
+
+					}else{
+
+						event.target.style.backgroundColor = "grey"
+						event.target.style.color = "grey"
+						bombsComplete -= 1
+
+					}
+					
+				}
+
+				//TEMP SCORE UPDATE
+
+				document.getElementById("score").innerHTML  = bombsComplete + "/" + bombsTotal
+
+			}
+
+
+
+			function cellClicked(yCoord, xCoord){
+				// To initialise the thingos
+
+				if (gameInProgress == false){
+
+					gameInProgress = true
+					startCoords.y = yCoord
+					startCoords.x = xCoord
+					bombPlace(bombsTotal);
+					updateBoard();
+
+				}
+
+				console.log(xCoord)
+				console.log(yCoord)
+				console.log(event.target)
+
+				var tempCell = event.target
+				if(event.target.innerHTML == "X" && event.target.style.backgroundColor != "red"){
+					alert("YOU LOSE")
+					gameInProgress = false
+					resetGame()
+				}else if(event.target.innerHTML != "X"){
+					tempCell.style.backgroundColor = "white"
+					cellDiscovery(yCoord, xCoord)
+				}
+
+				//TEMP SCORE UPDATE
+
+				document.getElementById("score").innerHTML  = bombsComplete + "/" + bombsTotal
+
+				
+
+				/*
+				if(event.target.style.backgroundColor == "white"){
+
+				}else if(event.target.style.backgroundColor == "grey"){
+					event.target.style.backgroundColor == "red"
+				}else{
+					event.target.style.backgroundColor == "grey"
+				}
+				*/
+
+			}
+
+			function cellDiscovery(yCoord, xCoord){
+				if(document.getElementById("cell" + yCoord + "-" + xCoord).innerHTML == ""){
+
+					for (var i = -1; i < 2; i++){
+
+						for (var j = -1; j < 2; j++){
+
+							if (j == 0 && i == 0){
+
+							}else if(document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()) != null && document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()).innerHTML != "X" && document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()).style.backgroundColor == "grey"){
+
+								document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()).style.backgroundColor = "white"
+
+								if(document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()).innerHTML == ""){
+
+									cellDiscovery((yCoord + i),(xCoord + j))
+
+								}
+								
+
+							}else{
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+
+
+			function getRandomArbitrary(min, max) {
+			    return Math.floor(Math.random() * (max - min) + min);
+			}
+
+
+
+
+		</script>
+
+	</body>
