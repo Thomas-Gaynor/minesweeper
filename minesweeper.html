@@ -47,7 +47,7 @@
 
 		<p id="score"></p>
 
-		<button onclick="resetGame()">Reset</button>
+		<button onclick="resetGame()" ondblclick="" on>Reset</button>
 
 		<p id="timer">0</p>
 
@@ -360,7 +360,7 @@
 				console.log(tempNumOfCompleteCells)
 
 				if(tempNumOfCompleteCells == (numberOfRows * numberOfColumns) - bombsTotal){
-					alert("Victory You Have Won")
+					alert("Victory You Have Won In" + timerTime)
 					resetGame()
 				}
 
