@@ -47,6 +47,10 @@
 
 		<p id="score"></p>
 
+		<button onclick="resetGame()">Reset</button>
+
+		<p id="timer">0</p>
+
 		<script>
 
 			var startCoords = {
@@ -55,6 +59,18 @@
 			}
 
 			var bombsComplete = 0
+
+			var timerTime = 0
+			var timerHolder;
+
+			var timerHolder = setInterval(function(){
+				if (gameInProgress == true){
+						timerTime += 1;
+						document.getElementById("timer").innerHTML = timerTime
+				}
+			}, 1000)
+
+			
 
 			document.addEventListener('contextmenu', event => event.preventDefault());
 
@@ -84,7 +100,7 @@
 
 				for (var ii = 0; ii < numberOfColumns; ii++){
 
-					tempRow.innerHTML += "<td id= 'cell" + i + "-" + ii + "' onclick='cellClicked(" + i + "," + ii + ")' oncontextmenu='cellClickedRight(" + i + "," + ii + ")'></td>";
+					tempRow.innerHTML += "<td id= 'cell" + i + "-" + ii + "' onclick='cellClicked(" + i + "," + ii + ")' onauxclick='cellClickedRight(" + i + "," + ii + ")'></td>";
 
 					rows[i].push(document.getElementById("cell" + i + "-" + ii));
 
@@ -95,6 +111,10 @@
 			}
 
 			function resetGame(){
+
+				document.getElementById("timer").innerHTML = "0"
+
+				timerTime = 0
 
 				gameInProgress = false
 				bombsComplete = 0
@@ -249,6 +269,8 @@
 					startCoords.x = xCoord
 					bombPlace(bombsTotal);
 					updateBoard();
+
+					
 
 				}
 
