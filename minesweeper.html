@@ -64,6 +64,9 @@
 			var numberOfRows = 15;
 			var numberOfColumns = 15;
 
+			// var numberOfRows = document.getElementById("rowNum").value;
+			// var numberOfColumns = document.getElementById("colNum").value;
+
 			var bombsTotal = Math.round((numberOfColumns * numberOfRows) / 7)
 
 
@@ -93,6 +96,7 @@
 
 			function resetGame(){
 
+				gameInProgress = false
 				bombsComplete = 0
 				for (var i = 0; i < numberOfRows; i++){
 
@@ -208,6 +212,8 @@
 
 			function cellClickedRight(){
 
+				checkForWin()
+
 				if (gameInProgress == true && event.target.style.backgroundColor != "white"){
 					if (event.target.style.backgroundColor != "red"){
 
@@ -246,18 +252,19 @@
 
 				}
 
-				console.log(xCoord)
-				console.log(yCoord)
-				console.log(event.target)
+				// console.log(xCoord)
+				// console.log(yCoord)
+				// console.log(event.target)
 
 				var tempCell = event.target
 				if(event.target.innerHTML == "X" && event.target.style.backgroundColor != "red"){
 					alert("YOU LOSE")
-					gameInProgress = false
+					
 					resetGame()
 				}else if(event.target.innerHTML != "X"){
 					tempCell.style.backgroundColor = "white"
 					cellDiscovery(yCoord, xCoord)
+					checkForWin()
 				}
 
 				//TEMP SCORE UPDATE
@@ -309,6 +316,35 @@
 				}
 
 			}
+
+			function checkForWin(){
+
+				var tempNumOfCompleteCells = 0
+				for (var i = 0; i < numberOfRows; i++){
+
+					for (var ii = 0; ii < numberOfColumns; ii++){
+
+						if (document.getElementById("cell" + i + "-" + ii).style.backgroundColor == "white"){
+
+							tempNumOfCompleteCells += 1
+
+						}
+
+					}
+
+				}
+
+				console.log((numberOfRows * numberOfColumns) - bombsTotal)
+				console.log(tempNumOfCompleteCells)
+
+				if(tempNumOfCompleteCells == (numberOfRows * numberOfColumns) - bombsTotal){
+					alert("Victory You Have Won")
+					resetGame()
+				}
+
+			}
+
+
 
 
 
