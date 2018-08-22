@@ -63,6 +63,10 @@
 				x: 0
 			}
 
+			// For Mobile devices
+
+			var touchedInsideBox = false
+
 			// Number Colour Array
 
 			var colourArray = ["white","blue","green","red","darkgreen","lightblue","purple","purple","purple"]
@@ -109,7 +113,7 @@
 
 				for (var ii = 0; ii < numberOfColumns; ii++){
 
-					tempRow.innerHTML += "<td id= 'cell" + i + "-" + ii + "' onclick='cellClicked(" + i + "," + ii + ")' onauxclick='cellClickedRight(" + i + "," + ii + ")'></td>";
+					tempRow.innerHTML += "<td id= 'cell" + i + "-" + ii + "' oncontextmenu='cellClickedRight(event)' onmousedown='mouseDownVar(event)' onmouseleave='mouseLeaveVar()' onmouseup='mouseUpVar(" + i + "," + ii + ",event)' ></td>";
 
 					rows[i].push(document.getElementById("cell" + i + "-" + ii));
 
@@ -118,6 +122,39 @@
 
 				}
 			}
+
+			//-------------
+
+			function mouseDownVar(event){ 
+
+				touchedInsideBox = true
+				touchedInsideBoxTimer = setTimeout(function(){
+
+					cellClickedRight(event)
+					touchedInsideBox = false
+					clearTimeout(touchedInsideBoxTimer)
+
+				}, 300)
+
+			}
+
+			function mouseUpVar(i,ii,event){ 
+				if (touchedInsideBox == true){
+					clearTimeout(touchedInsideBoxTimer)
+					cellClicked(i,ii,event)
+					touchedInsideBox = false
+				}
+			}
+
+			function mouseLeaveVar(){
+				if(touchedInsideBox == true){
+					touchedInsideBox = false
+					console.log("fail to complete")
+					clearTimeout(touchedInsideBoxTimer)
+				}
+			}
+
+			//----------
 
 			function resetGame(){
 
@@ -239,7 +276,7 @@
 
 			}
 
-			function cellClickedRight(){
+			function cellClickedRight(event){
 
 				checkForWin()
 
@@ -268,7 +305,7 @@
 
 
 
-			function cellClicked(yCoord, xCoord){
+			function cellClicked(yCoord, xCoord, event){
 				// To initialise the thingos
 
 				if (gameInProgress == false){
@@ -393,3 +430,4 @@
 		</script>
 
 	</body>
+</html>
