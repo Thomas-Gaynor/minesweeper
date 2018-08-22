@@ -7,7 +7,7 @@
 			td {
 				width: 40px;
 				height: 40px;
-				border: 1px solid black;
+				border: 1px solid lightgrey;
 				text-align: center;
 				padding: 0px;
 				margin:  0px;
@@ -16,6 +16,7 @@
 			table{
 				margin: auto;
 				margin-top: 40px;
+				border-spacing: 0px;
 
 			}
 
@@ -51,12 +52,20 @@
 
 		<p id="timer">0</p>
 
+		<p> Thomas Gaynor - 2018</p>
+
 		<script>
+
+			// Temp var for coords
 
 			var startCoords = {
 				y: 0,
 				x: 0
 			}
+
+			// Number Colour Array
+
+			var colourArray = ["white","blue","red","green","darkgreen","lightblue","purple","purple","purple"]
 
 			var bombsComplete = 0
 
@@ -287,6 +296,9 @@
 					tempCell.style.backgroundColor = "white"
 					cellDiscovery(yCoord, xCoord)
 					checkForWin()
+
+					var tempDocoValue = event.target.innerHTML
+					event.target.style.color = colourArray[tempDocoValue]
 				}
 
 				//TEMP SCORE UPDATE
@@ -325,6 +337,9 @@
 									cellDiscovery((yCoord + i),(xCoord + j))
 
 								}
+
+							var tempDocoValue = document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()).innerHTML
+							document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()).style.color = colourArray[tempDocoValue]
 								
 
 							}else{
@@ -356,11 +371,9 @@
 
 				}
 
-				console.log((numberOfRows * numberOfColumns) - bombsTotal)
-				console.log(tempNumOfCompleteCells)
 
 				if(tempNumOfCompleteCells == (numberOfRows * numberOfColumns) - bombsTotal){
-					alert("Victory You Have Won In" + timerTime)
+					alert("Victory You Have Won In " + Math.floor(timerTime / 60) + " minute/s " + (timerTime % 60) + " second/s")
 					resetGame()
 				}
 
