@@ -56,16 +56,14 @@
 
 		<script>
 
+			// This document be copyright and that otha stuff yo. - Thomas Gaynor 2018
+
 			// Temp var for coords
 
 			var startCoords = {
 				y: 0,
 				x: 0
 			}
-
-			// For Mobile devices
-
-			var touchedInsideBox = false
 
 			// Number Colour Array
 
@@ -113,49 +111,27 @@
 
 				for (var ii = 0; ii < numberOfColumns; ii++){
 
-					tempRow.innerHTML += "<td id= 'cell" + i + "-" + ii + "' oncontextmenu='cellClickedRight(event)' onmousedown='mouseDownVar(event)' onmouseleave='mouseLeaveVar()' onmouseup='mouseUpVar(" + i + "," + ii + ",event)' ></td>";
+					tempRow.innerHTML += "<td id='"+ i + "-" + ii + "'></td>";
 
 					rows[i].push(document.getElementById("cell" + i + "-" + ii));
 
-					document.getElementById("cell" + i + "-" + ii).style.backgroundColor = "grey"
-					document.getElementById("cell" + i + "-" + ii).style.color = "grey"
+					// document.getElementById(i + "-" + ii).style.backgroundColor = "grey"
+					// document.getElementById(i + "-" + ii).style.color = "grey"
 
 				}
 			}
 
-			//-------------
+			document.getElementById("tableBody").addEventListener("click", function(){
+				var eventId = event.target.id.split("-")
+				cellClicked(eventId[0], eventId[1]);
+			})
 
-			function mouseDownVar(event){ 
+			document.getElementById("tableBody").addEventListener("contextmenu", function(){
+				var eventId = event.target.id.split("-")
+				cellClickedRight(eventId[0], eventId[1]);
+			})
 
-				touchedInsideBox = true
-				touchedInsideBoxTimer = setTimeout(function(){
-
-					cellClickedRight(event)
-					touchedInsideBox = false
-					clearTimeout(touchedInsideBoxTimer)
-
-				}, 300)
-
-			}
-
-			function mouseUpVar(i,ii,event){ 
-				if (touchedInsideBox == true){
-					clearTimeout(touchedInsideBoxTimer)
-					cellClicked(i,ii,event)
-					touchedInsideBox = false
-				}
-			}
-
-			function mouseLeaveVar(){
-				if(touchedInsideBox == true){
-					touchedInsideBox = false
-					console.log("fail to complete")
-					clearTimeout(touchedInsideBoxTimer)
-				}
-			}
-
-			//----------
-
+			
 			function resetGame(){
 
 				document.getElementById("timer").innerHTML = "0"
@@ -168,15 +144,16 @@
 
 					for (var ii = 0; ii < numberOfColumns; ii++){
 
-						document.getElementById("cell" + i + "-" + ii).style.backgroundColor = "grey"
-						document.getElementById("cell" + i + "-" + ii).style.color = "grey"
-						document.getElementById("cell" + i + "-" + ii).innerHTML = ""
+						document.getElementById(i + "-" + ii).style.backgroundColor = "grey"
+						document.getElementById(i + "-" + ii).style.color = "grey"
+						document.getElementById(i + "-" + ii).innerHTML = ""
 
 					}
 				}
 
-				
 			}
+
+			resetGame()
 
 			// Randomly pace a bomb, repeatTimes = no. of times to place it
 
@@ -192,8 +169,8 @@
 			function bombPlaceSubAction(){
 				var tempX = getRandomArbitrary(0,numberOfColumns)
 				var tempY = getRandomArbitrary(0,numberOfRows)
-				if (document.getElementById("cell" + tempY + "-" + tempX).innerHTML == "" && startAreaTest(tempY, tempX) == true){
-					document.getElementById("cell" + tempY + "-" + tempX).innerHTML = "X"
+				if (document.getElementById(tempY + "-" + tempX).innerHTML == "" && startAreaTest(tempY, tempX) == true){
+					document.getElementById(tempY + "-" + tempX).innerHTML = "X"
 				}else{
 					bombPlaceSubAction()
 				}
@@ -207,7 +184,10 @@
 
 					for (var j = -1; j < 2; j++){
 
-						if(yCoord == startCoords.y + i && xCoord == startCoords.x + j){
+						var tempYCoord = parseInt(startCoords.y) + i
+						var tempXCoord = parseInt(startCoords.x) + j
+
+						if(yCoord == tempYCoord && xCoord == tempXCoord){
 
 							return false
 
@@ -223,7 +203,7 @@
 			// Select location for bomb regardless of location (DEBUGGER)
 
 			function directBombPlace(xBomb, yBomb){
-				document.getElementById("cell" + yBomb + "-" + xBomb).innerHTML = "X"
+				document.getElementById(yBomb + "-" + xBomb).innerHTML = "X"
 			}
 
 			// Checks to see if there are any bombs near things
@@ -238,9 +218,9 @@
 
 						if (j == 0 && i == 0){
 
-						}else if(document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()) != null && document.getElementById("cell" + yCoord + "-" + xCoord).innerHTML != "X"){
+						}else if(document.getElementById((yCoord + i).toString() + "-" + (xCoord + j).toString()) != null && document.getElementById(yCoord + "-" + xCoord).innerHTML != "X"){
 
-							if(document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()).innerHTML == "X"){
+							if(document.getElementById((yCoord + i).toString() + "-" + (xCoord + j).toString()).innerHTML == "X"){
 
 								nextBombTally += 1
 
@@ -256,7 +236,7 @@
 
 				}
 				if(nextBombTally != 0){
-					document.getElementById("cell" + yCoord + "-" + xCoord).innerHTML = nextBombTally
+					document.getElementById(yCoord + "-" + xCoord).innerHTML = nextBombTally
 				}
 			}
 
@@ -276,7 +256,7 @@
 
 			}
 
-			function cellClickedRight(event){
+			function cellClickedRight(){
 
 				checkForWin()
 
@@ -305,7 +285,58 @@
 
 
 
-			function cellClicked(yCoord, xCoord, event){
+			// function cellClicked(yCoord, xCoord){
+			// 	// To initialise the thingos
+
+			// 	if (gameInProgress == false){
+
+			// 		gameInProgress = true
+			// 		startCoords.y = yCoord
+			// 		startCoords.x = xCoord
+			// 		bombPlace(bombsTotal);
+			// 		updateBoard();
+
+					
+
+			// 	}
+
+			// 	// console.log(xCoord)
+			// 	// console.log(yCoord)
+			// 	// console.log(event.target)
+
+			// 	var tempCell = event.target
+			// 	if(event.target.innerHTML == "X" && event.target.style.backgroundColor != "red"){
+			// 		alert("YOU LOSE")
+					
+			// 		resetGame()
+			// 	}else if(event.target.innerHTML != "X"){
+			// 		tempCell.style.backgroundColor = "white"
+			// 		cellDiscovery(yCoord, xCoord)
+			// 		checkForWin()
+
+			// 		var tempDocoValue = event.target.innerHTML
+			// 		event.target.style.color = colourArray[tempDocoValue]
+			// 	}
+
+			// 	//TEMP SCORE UPDATE
+
+			// 	document.getElementById("score").innerHTML  = bombsComplete + "/" + bombsTotal
+
+				
+
+			// 	/*
+			// 	if(event.target.style.backgroundColor == "white"){
+
+			// 	}else if(event.target.style.backgroundColor == "grey"){
+			// 		event.target.style.backgroundColor == "red"
+			// 	}else{
+			// 		event.target.style.backgroundColor == "grey"
+			// 	}
+			// 	*/
+
+			// }
+
+			function cellClicked(yCoord, xCoord){
 				// To initialise the thingos
 
 				if (gameInProgress == false){
@@ -322,20 +353,20 @@
 
 				// console.log(xCoord)
 				// console.log(yCoord)
-				// console.log(event.target)
+				// console.log(document.getElementById(yCoord + "-" +xCoord))
 
-				var tempCell = event.target
-				if(event.target.innerHTML == "X" && event.target.style.backgroundColor != "red"){
-					alert("YOU LOSE")
+				var tempCell = document.getElementById(yCoord + "-" +xCoord)
+				if(document.getElementById(yCoord + "-" + xCoord).innerHTML == "X" && document.getElementById(yCoord + "-" + xCoord).style.backgroundColor != "red"){
+					alert("YOU SNOOZE, YOU LOSE")
 					
 					resetGame()
-				}else if(event.target.innerHTML != "X"){
+				}else if(document.getElementById(yCoord + "-" +xCoord).innerHTML != "X"){
 					tempCell.style.backgroundColor = "white"
 					cellDiscovery(yCoord, xCoord)
 					checkForWin()
 
-					var tempDocoValue = event.target.innerHTML
-					event.target.style.color = colourArray[tempDocoValue]
+					var tempDocoValue = document.getElementById(yCoord + "-" +xCoord).innerHTML
+					document.getElementById(yCoord + "-" +xCoord).style.color = colourArray[tempDocoValue]
 				}
 
 				//TEMP SCORE UPDATE
@@ -345,39 +376,42 @@
 				
 
 				/*
-				if(event.target.style.backgroundColor == "white"){
+				if(document.getElementById(yCoord + "-" +xCoord).style.backgroundColor == "white"){
 
-				}else if(event.target.style.backgroundColor == "grey"){
-					event.target.style.backgroundColor == "red"
+				}else if(document.getElementById(yCoord + "-" +xCoord).style.backgroundColor == "grey"){
+					document.getElementById(yCoord + "-" +xCoord).style.backgroundColor == "red"
 				}else{
-					event.target.style.backgroundColor == "grey"
+					document.getElementById(yCoord + "-" +xCoord).style.backgroundColor == "grey"
 				}
 				*/
 
 			}
 
 			function cellDiscovery(yCoord, xCoord){
-				if(document.getElementById("cell" + yCoord + "-" + xCoord).innerHTML == ""){
+
+				if(document.getElementById(yCoord + "-" + xCoord).innerHTML == ""){
 
 					for (var i = -1; i < 2; i++){
 
 						for (var j = -1; j < 2; j++){
 
+							var tempYCoord = parseInt(yCoord) + i
+							var tempXCoord = parseInt(xCoord) + j
+
 							if (j == 0 && i == 0){
 
-							}else if(document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()) != null && document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()).innerHTML != "X" && document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()).style.backgroundColor == "grey"){
+							}else if(document.getElementById(tempYCoord + "-" + tempXCoord) != null && document.getElementById(tempYCoord + "-" + tempXCoord).innerHTML != "X" && document.getElementById(tempYCoord + "-" + tempXCoord).style.backgroundColor == "grey"){
 
-								document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()).style.backgroundColor = "white"
+								document.getElementById(tempYCoord + "-" + tempXCoord).style.backgroundColor = "white"
 
-								if(document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()).innerHTML == ""){
+								if(document.getElementById(tempYCoord + "-" + tempXCoord).innerHTML == ""){
 
-									cellDiscovery((yCoord + i),(xCoord + j))
+									cellDiscovery(tempYCoord, tempXCoord)
 
 								}
 
-							var tempDocoValue = document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()).innerHTML
-							document.getElementById("cell" + (yCoord + i).toString() + "-" + (xCoord + j).toString()).style.color = colourArray[tempDocoValue]
-								
+							var tempDocoValue = document.getElementById(tempYCoord + "-" + tempXCoord).innerHTML
+							document.getElementById(tempYCoord + "-" + tempXCoord).style.color = colourArray[tempDocoValue]
 
 							}else{
 
@@ -398,7 +432,7 @@
 
 					for (var ii = 0; ii < numberOfColumns; ii++){
 
-						if (document.getElementById("cell" + i + "-" + ii).style.backgroundColor == "white"){
+						if (document.getElementById(i + "-" + ii).style.backgroundColor == "white"){
 
 							tempNumOfCompleteCells += 1
 
@@ -430,4 +464,3 @@
 		</script>
 
 	</body>
-</html>
