@@ -5,8 +5,8 @@
 		<style>
 			
 			td {
-				width: 50px;
-				height: 50px;
+				width: 40px;
+				height: 40px;
 				border: 1px solid lightgrey;
 				text-align: center;
 				padding: 0px;
@@ -33,15 +33,6 @@
 				font-family: Helvetica, Arial, Sans-Serif;
 			}
 
-			#switchMethodBtn{
-				background-color: grey;
-				border: 1px solid lightgrey;
-				color: white;
-				padding: 10px;
-				font-size: 20px;
-
-			}
-
 		</style>
 
 	</head>
@@ -57,13 +48,9 @@
 
 		<p id="score"></p>
 
-		<button onclick="switchPlaceMethod()" id="switchMethodBtn">Place Bomb Flags</button> <br/><br/>
-
-		<button onclick="resetGame()">Reset</button>
+		<button onclick="resetGame()" ondblclick="" on>Reset</button>
 
 		<p id="timer">0</p>
-
-		<a href="minesweeperdesktop.html">Desktop Game</a>
 
 		<p> Thomas Gaynor - 2018</p>
 
@@ -77,8 +64,6 @@
 				y: 0,
 				x: 0
 			}
-
-			var placingBombs = false
 
 			// Number Colour Array
 
@@ -141,10 +126,10 @@
 				cellClicked(eventId[0], eventId[1]);
 			})
 
-			// document.getElementById("tableBody").addEventListener("contextmenu", function(){
-			// 	var eventId = event.target.id.split("-")
-			// 	cellClickedRight(eventId[0], eventId[1]);
-			// })
+			document.getElementById("tableBody").addEventListener("contextmenu", function(){
+				var eventId = event.target.id.split("-")
+				cellClickedRight(eventId[0], eventId[1]);
+			})
 
 			
 			function resetGame(){
@@ -353,45 +338,41 @@
 
 			function cellClicked(yCoord, xCoord){
 				// To initialise the thingos
-				if (placingBombs == false){
-					if (gameInProgress == false){
 
-						gameInProgress = true
-						startCoords.y = yCoord
-						startCoords.x = xCoord
-						bombPlace(bombsTotal);
-						updateBoard();
+				if (gameInProgress == false){
 
-						
+					gameInProgress = true
+					startCoords.y = yCoord
+					startCoords.x = xCoord
+					bombPlace(bombsTotal);
+					updateBoard();
 
-					}
-
-					// console.log(xCoord)
-					// console.log(yCoord)
-					// console.log(document.getElementById(yCoord + "-" +xCoord))
-
-					var tempCell = document.getElementById(yCoord + "-" +xCoord)
-					if(document.getElementById(yCoord + "-" + xCoord).innerHTML == "X" && document.getElementById(yCoord + "-" + xCoord).style.backgroundColor != "red"){
-						alert("YOU SNOOZE, YOU LOSE")
-						
-						resetGame()
-					}else if(document.getElementById(yCoord + "-" +xCoord).innerHTML != "X"){
-						tempCell.style.backgroundColor = "white"
-						cellDiscovery(yCoord, xCoord)
-						checkForWin()
-
-						var tempDocoValue = document.getElementById(yCoord + "-" +xCoord).innerHTML
-						document.getElementById(yCoord + "-" +xCoord).style.color = colourArray[tempDocoValue]
-					}
-
-					//TEMP SCORE UPDATE
-
-					document.getElementById("score").innerHTML  = bombsComplete + "/" + bombsTotal
-				}else{
-
-					cellClickedRight()
+					
 
 				}
+
+				// console.log(xCoord)
+				// console.log(yCoord)
+				// console.log(document.getElementById(yCoord + "-" +xCoord))
+
+				var tempCell = document.getElementById(yCoord + "-" +xCoord)
+				if(document.getElementById(yCoord + "-" + xCoord).innerHTML == "X" && document.getElementById(yCoord + "-" + xCoord).style.backgroundColor != "red"){
+					alert("YOU SNOOZE, YOU LOSE")
+					
+					resetGame()
+				}else if(document.getElementById(yCoord + "-" +xCoord).innerHTML != "X"){
+					tempCell.style.backgroundColor = "white"
+					cellDiscovery(yCoord, xCoord)
+					checkForWin()
+
+					var tempDocoValue = document.getElementById(yCoord + "-" +xCoord).innerHTML
+					document.getElementById(yCoord + "-" +xCoord).style.color = colourArray[tempDocoValue]
+				}
+
+				//TEMP SCORE UPDATE
+
+				document.getElementById("score").innerHTML  = bombsComplete + "/" + bombsTotal
+
 				
 
 				/*
@@ -475,22 +456,6 @@
 
 			function getRandomArbitrary(min, max) {
 			    return Math.floor(Math.random() * (max - min) + min);
-			}
-
-			function switchPlaceMethod(){
-
-				if (placingBombs == false){
-
-					placingBombs = true;
-					document.getElementById("switchMethodBtn").innerHTML = "Placing Bomb Flags"
-
-				}else if (placingBombs == true){
-
-					placingBombs = false
-					document.getElementById("switchMethodBtn").innerHTML = "Place Bomb Flags"
-
-				}
-
 			}
 
 
